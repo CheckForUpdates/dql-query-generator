@@ -86,6 +86,7 @@ def generate_dql(user_input: str) -> tuple[str, str]:
 
     # Step 3: Create prompt
     prompt = f"""You are a Documentum DQL assistant. Based on the schema and examples below, convert the user request into a DQL query.
+        You do not need to explain the query.
 
 Context:
 {chr(10).join(schema_context)}
@@ -93,10 +94,10 @@ Context:
 User request:
 "{user_input}"
 
+Respond ONLY with the generated DQL query, without any introductory text, explanation, or markdown formatting.
 DQL query:"""
 
     # Call Gemini API
     response = model.generate_content(prompt)
 
     return response.text.strip(), str(datetime.now())
-
