@@ -66,13 +66,14 @@ const DQLApp = () => {
   const copyToClipboard = () => navigator.clipboard.writeText(generatedQuery);
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-blue-600 text-white p-4">
-        <h1 className="text-2xl font-bold">Documentum DQL Query Generator</h1>
-        <p className="text-sm">Convert natural language to Documentum Query Language</p>
+    <div className="flex flex-col h-screen bg-gray-100 px-8"> {/* Added px-8 here */}
+      <header className="bg-blue-600 text-white p-4 -mx-8"> {/* Adjust header padding if needed due to parent padding */}
+        <h1 className="text-2xl font-bold px-8">Documentum DQL Query Generator</h1> {/* Add padding back to content */}
+        <p className="text-sm px-8">Convert natural language to Documentum Query Language</p> {/* Add padding back to content */}
       </header>
 
-      <main className="flex-grow p-4 overflow-auto">
+      {/* Removed px-8 from main as parent now has padding */}
+      <main className="flex-grow py-4 overflow-auto"> {/* Changed p-4 to py-4 */}
         <div className="mb-6">
           <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 shadow-md">
             <div className="mb-4">
@@ -168,7 +169,7 @@ const DQLApp = () => {
           {generatedQuery && generatedQuery !== "-- Error contacting backend" && (
             <div className="mt-3 flex items-center justify-end space-x-3">
               <span className={`text-sm ${feedbackGiven ? 'text-gray-500' : 'text-gray-700'}`}>
-                Was this query helpful?
+                Is this query accurate?
               </span>
               <button
                 onClick={() => handleFeedback('good')}
@@ -232,6 +233,8 @@ const DQLApp = () => {
       <footer className="bg-gray-200 p-3 text-center text-gray-600 text-sm">
         DQL Query Generator - A natural language to Documentum Query Language converter
       </footer>
+      {/* Footer might need adjustment if it should span full width */}
+      {/* <footer className="bg-gray-200 p-3 text-center text-gray-600 text-sm -mx-8 px-8"> */}
     </div>
   );
 };
