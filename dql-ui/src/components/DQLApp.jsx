@@ -11,6 +11,8 @@ const DQLApp = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [showDQLInfo, setShowDQLInfo] = useState(false);
   const [queryHistory, setQueryHistory] = useState([]);
+  const [currentQueryData, setCurrentQueryData] = useState(null); // To store input, query, timestamp
+  const [feedbackGiven, setFeedbackGiven] = useState(false); // Track feedback for the current query
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,16 +26,40 @@ const DQLApp = () => {
         body: JSON.stringify({ query: input })
       });
       const data = await res.json();
+      const newQueryData = { input, query: data.dql, timestamp: data.timestamp };
       setGeneratedQuery(data.dql);
-      setQueryHistory([
-        { input, query: data.dql, timestamp: data.timestamp },
-        ...queryHistory
-      ]);
+      setCurrentQueryData(newQueryData); // Store current query details
+      setFeedbackGiven(false); // Reset feedback status for new query
+      setQueryHistory([newQueryData, ...queryHistory]);
     } catch (error) {
       setGeneratedQuery("-- Error contacting backend");
+      setCurrentQueryData(null); // Clear current query data on error
+      setFeedbackGiven(false);
       console.error(error);
     }
     setIsLoading(false);
+  };
+
+  const handleFeedback = async (feedbackType) => {
+    if (feedbackGiven || !currentQueryData) return; // Prevent multiple feedbacks or feedback on no query
+
+    setFeedbackGiven(true); // Mark feedback as given for this query
+    try {
+      await fetch("http://localhost:8000/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...currentQueryData,
+          feedback: feedbackType // 'good' or 'bad'
+        })
+      });
+      // Optionally: Show a confirmation message to the user
+      console.log("Feedback submitted:", feedbackType);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      setFeedbackGiven(false); // Allow retry if submission failed
+      // Optionally: Show an error message to the user
+    }
   };
 
   const useExample = (text) => setInput(text);
@@ -136,6 +162,31 @@ const DQLApp = () => {
               }}
             />
           </div>
+
+          {/* Feedback Buttons */}
+          {generatedQuery && generatedQuery !== "-- Error contacting backend" && (
+            <div className="mt-3 flex items-center justify-end space-x-3">
+              <span className={`text-sm ${feedbackGiven ? 'text-gray-500' : 'text-gray-700'}`}>
+                Was this query helpful?
+              </span>
+              <button
+                onClick={() => handleFeedback('good')}
+                disabled={feedbackGiven}
+                className={`px-3 py-1 rounded ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-100 hover:bg-green-200 text-green-700'}`}
+                aria-label="Good query"
+              >
+                👍
+              </button>
+              <button
+                onClick={() => handleFeedback('bad')}
+                disabled={feedbackGiven}
+                className={`px-3 py-1 rounded ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
+                aria-label="Bad query"
+              >
+                👎
+              </button>
+            </div>
+          )}
 
           <div className="mt-4 flex justify-end">
             {/* <button
