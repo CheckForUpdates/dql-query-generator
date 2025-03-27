@@ -141,7 +141,8 @@ const DQLApp = () => {
           </div>
           <div className="bg-gray-800 rounded-md p-3 overflow-x-auto">
             <ReactMarkdown
-              children={generatedQuery || "Your query will appear here..."}
+              // Wrap the plain query string in markdown code fences for highlighting
+              children={generatedQuery ? `\`\`\`sql\n${generatedQuery}\n\`\`\`` : "Your query will appear here..."}
               components={{
                 code({ inline, children, ...props }) {
                   if (inline) {
