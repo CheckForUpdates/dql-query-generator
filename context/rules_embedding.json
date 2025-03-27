@@ -1,0 +1,177 @@
+[
+  {
+    "type": "guideline",
+    "title": "Alternate Names for a Document",
+    "content": "Documents can also be referred to as items, records, stuff.",
+    "source_text": "Rule: Documents can also be referred to as items, records, stuff."
+  },
+  {
+    "type": "guideline",
+    "title": "General DQL Formatting",
+    "content": "Only add DESCEND after the folder if 'subfolders' are prompted. folder('/FolderName', DESCEND)",
+    "source_text": "Rule: Counting and Filtering\nIf 'subfolders' are in the prompt use folder('/FolderName', DESCEND)"
+  },
+  {
+    "type": "guideline",
+    "title": "Time Expression Conversion",
+    "content": "Translate phrases like 'last 7 days' to 'r_modify_date > DATE(NOW - 7)'. Handle 'created after [date]' as r_creation_date > DATE('[date]').",
+    "source_text": "Rule: Time Expression Conversion\nTranslate phrases like 'last 7 days' to 'r_modify_date > DATE(NOW - 7)'. Handle 'created after [date]' as r_creation_date > DATE('[date]')."
+  },
+  {
+    "type": "guideline",
+    "title": "Ownership and Access",
+    "content": "Translate 'owned by [user]' to 'owner_name = \"[user]\"'. Translate 'private cabinets' to 'a_is_private = true'.",
+    "source_text": "Rule: Ownership and Access\nTranslate 'owned by [user]' to 'owner_name = \"[user]\"'. Translate 'private cabinets' to 'a_is_private = true'."
+  },
+  {
+    "type": "guideline",
+    "title": "Keyword Matching",
+    "content": "Translate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching.",
+    "source_text": "Rule: Keyword Matching\nTranslate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching."
+  },
+  {
+    "type": "guideline",
+    "title": "Counting and Filtering",
+    "content": "For 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria.",
+    "source_text": "Rule: Counting and Filtering\nFor 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria."
+  },
+  {
+    "type": "guideline",
+    "title": "General DQL Formatting",
+    "content": "Always use SELECT ... FROM ... WHERE structure. Use the exact attribute names from the schema. Avoid aliases. End queries with a semicolon.",
+    "source_text": "Rule: General DQL Formatting\nAlways use SELECT ... FROM ... WHERE structure. Use the exact attribute names from the schema. Avoid aliases. End queries with a semicolon."
+  },
+  {
+    "type": "intent_hint",
+    "title": "Audit Trail Queries",
+    "content": "When the user asks about audit history, refer to dm_audittrail. Include events like 'delete', 'create', or 'modify'.",
+    "source_text": "Intent: Audit Trail Queries\nUse dm_audittrail and filter by event_name and user_name."
+  },
+  {
+    "type": "glossary",
+    "title": "Cabinet",
+    "content": "A cabinet is a container object in Documentum that holds folders and documents.",
+    "source_text": "Glossary: Cabinet\nA cabinet is a container object in Documentum that holds folders and documents."
+  },
+  {
+    "type": "pattern",
+    "title": "Ownership Pattern",
+    "content": "Queries with 'owned by [user]' typically map to 'owner_name = \"[user]\"'.",
+    "source_text": "Pattern: owned by [user] → owner_name = '[user]'"
+  },
+  {
+    "type": "policy",
+    "title": "Retention Filter",
+    "content": "Documents older than 5 years should not be shown unless retention_flag is false.",
+    "source_text": "Policy: Apply retention filter if r_creation_date < NOW - 1825 and retention_flag = true"
+  },
+  {
+    "type": "user_context",
+    "title": "Current User: dmadmin",
+    "content": "Limit queries to objects owned by dmadmin unless otherwise specified.",
+    "source_text": "Context: Only return data where owner_name = 'dmadmin'"
+  },
+  {
+    "type": "pattern",
+    "title": "Ownership Pattern",
+    "content": "Queries with 'owned by [user]' typically map to 'owner_name = \"[user]\"'",
+    "source_text": "Pattern: 'owned by dmadmin' → owner_name = 'dmadmin'"
+  },
+  {
+    "type": "pattern",
+    "title": "Pre-Provision Pattern",
+    "content": "Queries with preprovision' typically map to ''",
+    "source_text": "Pattern: 'owned by dmadmin' → owner_name = 'dmadmin'"
+  },
+  {
+    "type": "policy",
+    "title": "Retention Filter",
+    "content": "Documents older than 5 years should not be shown unless record_retention_date is not null.",
+    "source_text": "Policy: Apply retention filter if r_creation_date < NOW - 1825 and record_retention_date is not null"
+  },
+  {
+    "type": "pattern",
+    "title": "Date Range Pattern",
+    "content": "Queries with 'created between [date1] and [date2]' typically map to 'r_creation_date BETWEEN DATE(\"[date1]\") AND DATE(\"[date2]\")'",
+    "source_text": "Pattern: 'created between 2023-01-01 and 2023-12-31' → r_creation_date BETWEEN DATE('2023-01-01') AND DATE('2023-12-31')"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Count Pattern",
+    "content": "Queries with 'count of documents' typically map to 'COUNT(*) FROM business_doc'",
+    "source_text": "Pattern: 'count of documents in cabinet' → COUNT(*) FROM business_doc"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Name Pattern",
+    "content": "Queries with 'document named [name]' typically map to 'object_name = \"[name]\"'",
+    "source_text": "Pattern: 'document named report.pdf' → object_name = 'report.pdf'"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Size Pattern",
+    "content": "Queries with 'size greater than [size]' typically map to 'r_content_size > \"[size]\"'",
+    "source_text": "Pattern: 'size greater than 1MB' → r_content_size > 1048576"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Version Pattern",
+    "content": "Queries with 'version [version]' typically map to 'r_version_label = \"[version]\"'",
+    "source_text": "Pattern: 'version 1.0' → r_version_label = '1.0'"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Owner Pattern",
+    "content": "Queries with 'owned by [user]' typically map to 'owner_name = \"[user]\"'",
+    "source_text": "Pattern: 'owned by dmadmin' → owner_name = 'dmadmin'"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Record Class Code Pattern",
+    "content": "Queries with 'record class code [recordclass]' typically map to 'record_class_codes = \"[class]\"'",
+    "source_text": "Pattern: 'record class code' → record_class_codes = 'ADM100'"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Status Pattern",
+    "content": "Queries with 'status [status]' typically map to 'status = \"[status]\"'",
+    "source_text": "Pattern: 'status active' → staus = 'active'"
+  },
+  {
+    "type": "pattern",
+    "title": "Document Type Pattern",
+    "content": "Queries with 'type [type]' typically map to 'r_content_type LIKE \"%[type]%\"'",
+    "source_text": "Pattern: 'type PDF' → r_content_type LIKE '%PDF%'"
+  },
+  {
+      "type": "guideline",
+      "title": "Alternate Names for a Document",
+      "content": "Documents can also be referred to as items, records, stuff.",
+      "source_text": "Rule: Documents can also be referred to as items, records, stuff."
+    },
+    {
+      "type": "guideline",
+      "title": "Time Expression Conversion",
+      "content": "Translate phrases like 'last 7 days' to 'r_modify_date > DATE(NOW - 7)'. Handle 'created after [date]' as r_creation_date > DATE('[date]').",
+      "source_text": "Rule: Time Expression Conversion\nTranslate phrases like 'last 7 days' to 'r_modify_date > DATE(NOW - 7)'. Handle 'created after [date]' as r_creation_date > DATE('[date]')."
+    },
+    {
+      "type": "guideline",
+      "title": "Ownership and Access",
+      "content": "Translate 'owned by [user]' to 'owner_name = \"[user]\"'. Translate 'private cabinets' to 'a_is_private = true'.",
+      "source_text": "Rule: Ownership and Access\nTranslate 'owned by [user]' to 'owner_name = \"[user]\"'. Translate 'private cabinets' to 'a_is_private = true'."
+    },
+    {
+      "type": "guideline",
+      "title": "Keyword Matching",
+      "content": "Translate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching.",
+      "source_text": "Rule: Keyword Matching\nTranslate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching."
+    },
+    {
+      "type": "guideline",
+      "title": "Counting and Filtering",
+      "content": "For 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria.",
+      "source_text": "Rule: Counting and Filtering\nFor 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria."
+    }
+  ]
+  

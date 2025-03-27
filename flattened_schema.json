@@ -1,0 +1,303 @@
+[
+  {
+    "object_type": "business_cab",
+    "attribute": "active_duration",
+    "type": "Integer",
+    "description": "active duration",
+    "source_text": "Object: business_cab\nAttribute: active_duration\nType: Integer\nDescription: active duration"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "cabinet_id",
+    "type": "Char (32)",
+    "description": "Cabinet ID",
+    "source_text": "Object: business_cab\nAttribute: cabinet_id\nType: Char (32)\nDescription: Cabinet ID"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "cabinet_source",
+    "type": "Char (32)",
+    "description": "Cabinet Source",
+    "source_text": "Object: business_cab\nAttribute: cabinet_source\nType: Char (32)\nDescription: Cabinet Source"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "centera_disabled",
+    "type": "Boolean",
+    "description": "centera disabled",
+    "source_text": "Object: business_cab\nAttribute: centera_disabled\nType: Boolean\nDescription: centera disabled"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "comments",
+    "type": "Char (2000)",
+    "description": "Comments",
+    "source_text": "Object: business_cab\nAttribute: comments\nType: Char (2000)\nDescription: Comments"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "default_delete_duration",
+    "type": "Integer",
+    "description": "Default Delete Duration",
+    "source_text": "Object: business_cab\nAttribute: default_delete_duration\nType: Integer\nDescription: Default Delete Duration"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "readonly_cabinet",
+    "type": "Boolean",
+    "description": "Readonly Cabinet",
+    "source_text": "Object: business_cab\nAttribute: readonly_cabinet\nType: Boolean\nDescription: Readonly Cabinet"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "source_type",
+    "type": "Char (48)",
+    "description": "Source Type",
+    "source_text": "Object: business_cab\nAttribute: source_type\nType: Char (48)\nDescription: Source Type"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "email_archive",
+    "type": "Boolean",
+    "description": "email archive",
+    "source_text": "Object: business_cab\nAttribute: email_archive\nType: Boolean\nDescription: email archive"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "event_rule_default",
+    "type": "Char (14 )",
+    "description": "Event Rule Default",
+    "source_text": "Object: business_cab\nAttribute: event_rule_default\nType: Char (14 )\nDescription: Event Rule Default"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "legal_hold_codes",
+    "type": "Char (64)",
+    "description": "Legal Hold Codes",
+    "source_text": "Object: business_cab\nAttribute: legal_hold_codes\nType: Char (64)\nDescription: Legal Hold Codes"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "lob_name",
+    "type": "Char (255)",
+    "description": "LOB Name",
+    "source_text": "Object: business_cab\nAttribute: lob_name\nType: Char (255)\nDescription: LOB Name"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "owner_au",
+    "type": "Char (7)",
+    "description": "Owner AU",
+    "source_text": "Object: business_cab\nAttribute: owner_au\nType: Char (7)\nDescription: Owner AU"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "lightweight_workflow_id",
+    "type": "Char (32)",
+    "description": "Lightweight Workflow ID",
+    "source_text": "Object: business_cab\nAttribute: lightweight_workflow_id\nType: Char (32)\nDescription: Lightweight Workflow ID"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "pre-provisioned_cabinet_order_number",
+    "type": "Integer",
+    "description": "Pre-provisioned Cabinet Order Number",
+    "source_text": "Object: business_cab\nAttribute: pre-provisioned_cabinet_order_number\nType: Integer\nDescription: Pre-provisioned Cabinet Order Number"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "pre-provisioned_cabinet_state",
+    "type": "Char (32)",
+    "description": "Pre-provisioned Cabinet State",
+    "source_text": "Object: business_cab\nAttribute: pre-provisioned_cabinet_state\nType: Char (32)\nDescription: Pre-provisioned Cabinet State"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "primary_cabinet_owner",
+    "type": "Char (32)",
+    "description": "Primary Cabinet Owner",
+    "source_text": "Object: business_cab\nAttribute: primary_cabinet_owner\nType: Char (32)\nDescription: Primary Cabinet Owner"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "rc_integration",
+    "type": "Boolean",
+    "description": "RC Integration",
+    "source_text": "Object: business_cab\nAttribute: rc_integration\nType: Boolean\nDescription: RC Integration"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "records_enabled",
+    "type": "Boolean",
+    "description": "Records Enabled",
+    "source_text": "Object: business_cab\nAttribute: records_enabled\nType: Boolean\nDescription: Records Enabled"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "record_class_codes",
+    "type": "Char (32)",
+    "description": "Record Class Codes",
+    "source_text": "Object: business_cab\nAttribute: record_class_codes\nType: Char (32)\nDescription: Record Class Codes"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "record_class_default",
+    "type": "Char (10)",
+    "description": "record class default",
+    "source_text": "Object: business_cab\nAttribute: record_class_default\nType: Char (10)\nDescription: record class default"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "record_country_code",
+    "type": "Char (3)",
+    "description": "Record Country Code",
+    "source_text": "Object: business_cab\nAttribute: record_country_code\nType: Char (3)\nDescription: Record Country Code"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "retention_duration",
+    "type": "Integer",
+    "description": "retention duration",
+    "source_text": "Object: business_cab\nAttribute: retention_duration\nType: Integer\nDescription: retention duration"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "secondary_cabinet_ownef",
+    "type": "Char (32)",
+    "description": "Secondary Cabinet Owner",
+    "source_text": "Object: business_cab\nAttribute: secondary_cabinet_ownef\nType: Char (32)\nDescription: Secondary Cabinet Owner"
+  },
+  {
+    "object_type": "business_cab",
+    "attribute": "default_secure_content_flag",
+    "type": "Boolean",
+    "description": "Default Secure Content Flag",
+    "source_text": "Object: business_cab\nAttribute: default_secure_content_flag\nType: Boolean\nDescription: Default Secure Content Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_code",
+    "type": "Char (10)",
+    "description": "Record Class Retention Code",
+    "source_text": "Object: record_class\nAttribute: record_class_code\nType: Char (10)\nDescription: Record Class Retention Code"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_country_code",
+    "type": "Char (3)",
+    "description": "Country Code",
+    "source_text": "Object: record_class\nAttribute: record_class_country_code\nType: Char (3)\nDescription: Country Code"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_date_watermark",
+    "type": "Time/ Date",
+    "description": "Date Watermark",
+    "source_text": "Object: record_class\nAttribute: record_class_date_watermark\nType: Time/ Date\nDescription: Date Watermark"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_deprecated",
+    "type": "Boolean",
+    "description": "Record Class Deprecated",
+    "source_text": "Object: record_class\nAttribute: record_class_deprecated\nType: Boolean\nDescription: Record Class Deprecated"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_description",
+    "type": "Char (2000)",
+    "description": "Record Class Description",
+    "source_text": "Object: record_class\nAttribute: record_class_description\nType: Char (2000)\nDescription: Record Class Description"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_act",
+    "type": "Boolean",
+    "description": "Active Flag (Event Driven)",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_act\nType: Boolean\nDescription: Active Flag (Event Driven)"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_cy",
+    "type": "Boolean",
+    "description": "Current Year Flag",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_cy\nType: Boolean\nDescription: Current Year Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_ind",
+    "type": "Boolean",
+    "description": "Indefinite Flag",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_ind\nType: Boolean\nDescription: Indefinite Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_max",
+    "type": "Boolean",
+    "description": "Max Flag",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_max\nType: Boolean\nDescription: Max Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_perm",
+    "type": "Boolean",
+    "description": "Permanent Flag",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_perm\nType: Boolean\nDescription: Permanent Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_flags_sup",
+    "type": "Boolean",
+    "description": "Superceded Flag",
+    "source_text": "Object: record_class\nAttribute: record_class_flags_sup\nType: Boolean\nDescription: Superceded Flag"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_lifecycle",
+    "type": "Char (255)",
+    "description": "Record Class Lifecycle",
+    "source_text": "Object: record_class\nAttribute: record_class_lifecycle\nType: Char (255)\nDescription: Record Class Lifecycle"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class",
+    "type": "Char (255)",
+    "description": "Class Name",
+    "source_text": "Object: record_class\nAttribute: record_class\nType: Char (255)\nDescription: Class Name"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_retain_days",
+    "type": "Integer",
+    "description": "Retention Days",
+    "source_text": "Object: record_class\nAttribute: record_class_retain_days\nType: Integer\nDescription: Retention Days"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_retain_months",
+    "type": "Integer",
+    "description": "Retention Months",
+    "source_text": "Object: record_class\nAttribute: record_class_retain_months\nType: Integer\nDescription: Retention Months"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_retain_weeks",
+    "type": "Integer",
+    "description": "Retention Weeks",
+    "source_text": "Object: record_class\nAttribute: record_class_retain_weeks\nType: Integer\nDescription: Retention Weeks"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "record_class_retain_years",
+    "type": "Integer",
+    "description": "Retention Years",
+    "source_text": "Object: record_class\nAttribute: record_class_retain_years\nType: Integer\nDescription: Retention Years"
+  },
+  {
+    "object_type": "record_class",
+    "attribute": "retention_event",
+    "type": "Char (10)",
+    "description": "Retention Event",
+    "source_text": "Object: record_class\nAttribute: retention_event\nType: Char (10)\nDescription: Retention Event"
+  }
+]

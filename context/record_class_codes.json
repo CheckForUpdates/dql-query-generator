@@ -1,0 +1,148 @@
+{
+  "record_class_codes": [
+    {
+      "name": "ADM100"
+    },
+    {
+      "name": "ADM130"
+    },
+    {
+      "name": "ADM150"
+    },
+    {
+      "name": "ADM160"
+    },
+    {
+      "name": "ADM300"
+    },
+    {
+      "name": "AUD140"
+    },
+    {
+      "name": "AUD200"
+    },
+    {
+      "name": "AUD300"
+    },
+    {
+      "name": "AUD400"
+    },
+    {
+      "name": "BIO100"
+    },
+    {
+      "name": "BNK100"
+    },
+    {
+      "name": "BNK460"
+    },
+    {
+      "name": "CFA140"
+    },
+    {
+      "name": "CFA220"
+    },
+    {
+      "name": "CFA320"
+    },
+    {
+      "name": "CFA340"
+    },
+    {
+      "name": "CFA360"
+    },
+    {
+      "name": "CFA400"
+    },
+    {
+      "name": "COR100"
+    },
+    {
+      "name": "COR115"
+    },
+    {
+      "name": "COR140"
+    },
+    {
+      "name": "COR175"
+    },
+    {
+      "name": "CPM160"
+    },
+    {
+      "name": "CPM280"
+    },
+    {
+      "name": "CRM050"
+    },
+    {
+      "name": "CRM220"
+    },
+    {
+      "name": "EHS120"
+    },
+    {
+      "name": "HUM100"
+    },
+    {
+      "name": "HUM170"
+    },
+    {
+      "name": "HUM175"
+    },
+    {
+      "name": "HUM180"
+    },
+    {
+      "name": "HUM320"
+    },
+    {
+      "name": "HUM420"
+    },
+    {
+      "name": "HUM460"
+    },
+    {
+      "name": "INS160"
+    },
+    {
+      "name": "INS180"
+    },
+    {
+      "name": "INV160"
+    },
+    {
+      "name": "INV220"
+    },
+    {
+      "name": "ISY100"
+    },
+    {
+      "name": "LEG120"
+    },
+    {
+      "name": "LEG320"
+    },
+    {
+      "name": "LEG460"
+    },
+    {
+      "name": "LNS100"
+    },
+    {
+      "name": "LNS115"
+    },
+    {
+      "name": "SAL100"
+    },
+    {
+      "name": "SAL110"
+    },
+    {
+      "name": "SAL240"
+    },
+    {
+      "name": "TAX100"
+    }
+  ]
+}

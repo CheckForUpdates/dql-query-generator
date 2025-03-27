@@ -1,0 +1,59 @@
+
+Documentum DQL Natural Language Assistant - Project Summary (March 2025)
+=======================================================================
+
+GOAL:
+-----
+Build a full-stack AI-powered assistant that:
+- Accepts natural language input related to Documentum content
+- Returns valid, contextual DQL queries
+- Leverages your schema and DQL examples for smarter query generation
+
+STACK:
+------
+Frontend: React + Tailwind CSS (Vite)
+- React component (DQLApp.jsx) accepts user prompt
+- Sends POST requests to backend API
+- Displays DQL query result + history
+- Fully styled via Tailwind
+
+Backend: FastAPI + SentenceTransformers + Gemini API
+- Accepts /generate POST requests with natural language prompt
+- Embeds prompt locally using "all-MiniLM-L6-v2"
+- Searches Elasticsearch (dql_schema) for relevant fields + example DQLs
+- Builds Gemini prompt with:
+  * Schema fields
+  * Top DQL examples
+  * User input
+- Sends request to Gemini 2.0 Pro via API key
+- Returns DQL query + timestamp to frontend
+
+DATA INDEXED IN ELASTICSEARCH:
+------------------------------
+Index: dql_schema
+Types:
+- "schema" documents: from business_cab and record_class
+- "example" documents: 20+ natural language → DQL pairs
+
+KEY FILES TO REUPLOAD NEXT TIME:
+--------------------------------
+- business_cab.json
+- record_class.json
+- flattened_schema.json or embedded_schema.json (if skipping re-embedding)
+
+FRONTEND DEV SERVER:
+--------------------
+- npm run dev → http://localhost:5173
+
+BACKEND API SERVER:
+-------------------
+- uvicorn dql_backend_api:app --reload → http://localhost:8000/generate
+
+NEXT STEPS:
+-----------
+- Re-upload schema + examples in new chat
+- Rebuild embedding index if needed
+- Test and tune Gemini prompts with new examples
+- Add validation, result preview, or ranking if desired
+
+You're well-positioned to expand this into a powerful natural language assistant for any Documentum-based DMS!

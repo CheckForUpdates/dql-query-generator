@@ -1,0 +1,39 @@
+{
+    "entityMappings": {
+      "document": ["record", "item", "stuff", "files", "doc"],
+      "folder": ["directory", "folder", "location", "subfolder"],
+      "attribute": ["property", "metadata", "info"]
+    },
+    
+    "idPatterns": [
+      {
+        "trigger": ["pre-provision", "preprovision"],
+        "pattern": "pp\\d+",
+        "prefix": "pp",
+        "description": "Pre provisioned cabinet ids begin with pp followed by a number. pp1, pp2, pp3, ppN..."
+      },
+      {
+        "trigger": ["financial", "finance", "accounting"],
+        "pattern": "fin\\d{4}",
+        "prefix": "fin",
+        "description": "Financial documents have IDs that start with 'fin' followed by 4 digits"
+      }
+    ],
+    
+    "queryTemplates": {
+      "basicSelect": "SELECT {attributes} FROM {objectType} WHERE {conditions}",
+      "folderQuery": "SELECT {attributes} FROM {objectType} WHERE FOLDER('/{folderPath}')",
+      "subfolderQuery:": "SELECT {attributes} FROM {objectType} WHERE FOLDER('/{folderPath}', DESCEND)'"      
+    },
+
+    "Migration": [
+      {
+        "trigger": ["RIMA", "Migration"],
+        "pattern": "RIMA_\\d+",
+        "prefix": "RIMA_",
+        "description": "Cabinets that begin with 'RIMA_' are reserved for the RIMA to DMS migration."
+      }
+      
+    ]
+
+  }

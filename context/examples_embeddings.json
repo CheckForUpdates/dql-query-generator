@@ -1,0 +1,95 @@
+[
+    {
+      "nl": "Retrieves all cabinets whose names start with \"Project\"",
+      "dql": "SELECT * FROM business_cab WHERE object_name LIKE 'Project%';"
+    },
+    {
+      "nl": "Retrieves all cabinets owned by the user \"dmadmin\", sorted by most recently modified first",
+      "dql": "SELECT * FROM business_cab WHERE owner_name = 'dmadmin' ORDER BY r_modify_date DESC;"
+    },
+    {
+      "nl": "Retrieves all cabinets marked as private",
+      "dql": "SELECT * FROM business_cab WHERE a_is_hidden = true;"
+    },
+    {
+      "nl": "Retrieves all cabinets created after January 1, 2024",
+      "dql": "SELECT * FROM business_cab WHERE r_creation_date > DATE('01/01/2024');"
+    },
+    {
+      "nl": "Retrieves all cabinets that are also listed as system objects owned by \"user1\";",
+      "dql": "SELECT * FROM business_cab WHERE r_object_id IN (SELECT r_object_id FROM dm_sysobject WHERE owner_name = 'user1');"
+    },
+    {
+      "nl": "Retrieves all cabinets with non case-sensitive words \"development team\" in their name that do not contain any folders owned by users other than \"dmadmin\";",
+      "dql": "SELECT * FROM business_cab WHERE lower(object_name) LIKE '%development team%' AND r_object_id NOT IN (SELECT parent_id FROM dm_folder WHERE owner_name != 'dmadmin');"
+    },
+    {
+      "nl": "Retrieves all cabinets within the Corporate folder path, sorted alphabetically by name A to Z",
+      "dql": "SELECT * FROM business_cab WHERE any i_folder_path LIKE '/Corporate/%' ORDER BY object_name asc;"
+    },    
+    {
+      "nl": "Retrieves all cabinets that contain more than 100 objects (including documents and subfolders)",
+      "dql": "SELECT * FROM business_cab WHERE (SELECT COUNT(*) FROM dm_sysobject WHERE folder(ID, DESCEND) = c.r_object_id) > 100 ENABLE(ROW_BASED);"
+    },
+    {
+      "nl": "Retrieves all cabinets that have audit trail entries associated with them",
+      "dql": "SELECT * FROM business_cab c WHERE EXISTS (SELECT 1 FROM dm_audittrail WHERE audited_obj_id = c.r_object_id);"
+    },
+    {
+      "nl": "Retrieves all record class codes associated with a specific cabinet",
+      "dql": "SELECT distinct(record_class_codes) FROM business_cab where object_name = <CabinetName>;"
+    },
+    {
+      "nl": "Counts the number of cabinets owned by the user \"dmadmin\"",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE owner_name = 'dmadmin';"
+    },
+    {
+      "nl": "Counts the number of cabinets created after January 1, 2024",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE r_creation_date > DATE('01/01/2024');"
+    },
+    {
+      "nl": "Counts the number of cabinets with non case-sensitive words that appear as \"development team\" anywhere in their name",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE lower(object_name) LIKE '%development team%';"
+    },
+    {
+      "nl": "Counts the number of cabinets marked as private",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE a_is_private = true;"
+    },
+    {
+      "nl": "Counts the number of cabinets modified within the last 30 days",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE r_modify_date > DATEADD(DAY, -30, TODAY);"
+    },
+    {
+      "nl": "Counts the number of cabinets that have at least one folder directly under them",
+      "dql": "SELECT COUNT(*) FROM business_cab c WHERE EXISTS (SELECT 1 FROM dm_folder f WHERE f.r_object_id = c.r_object_id);"
+    },
+    {
+      "nl": "Counts the number of cabinets that use the \"Restricted\" access control list from the \"Corporate\" domain",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE acl_domain = 'Corporate' AND acl_name = 'Restricted';"
+    },
+    {
+      "nl": "Counts the number of cabinets owned by inactive users",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE owner_name IN (SELECT user_name FROM dm_user WHERE user_state = '1');"
+    },
+    {
+      "nl": "Counts the number of completely empty cabinets (no documents or folders)",
+      "dql": "SELECT COUNT(*) from business_cab where r_link_cnt = '0';"
+    },
+    {
+      "nl": "Counts the number of cabinets that contain at least one folder with symbolic links",
+      "dql": "SELECT COUNT(*) FROM business_cab WHERE r_object_id IN (SELECT parent_id FROM dm_folder WHERE link_count > '0');"
+    },
+    {
+      "nl": "Counts the number of users in a group",
+      "dql": "SELECT COUNT(*) FROM dm_group WHERE r_object_id IN (SELECT parent_id FROM dm_folder WHERE link_count > '0');"
+    },
+    {
+      "nl": "Counts the number documents in a specific folder created in the year 2023. The folder in this case is the cabinet name.",
+      "dql": "SELECT COUNT(*) FROM dm_document WHERE FOLDER('/<FolderName>') AND creation_date BETWEEN DATE('2023-01-01') AND DATE('2023-12-31');"
+    },
+    {
+      "nl": "Checks to see if a specific cabinet is hidden",
+      "dql": "SELECT a_is_hidden from business_cab where object_name = '<CabinetName>';"
+    }
+    
+  ]

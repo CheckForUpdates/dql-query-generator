@@ -1,0 +1,129 @@
+{
+  "attr_name": [
+    {
+      "name": "active_duration",
+      "type": "Integer",
+      "label": "active duration"
+    },
+    {
+      "name": "cabinet_id",
+      "type": "Char (32)",
+      "label": "Cabinet ID"
+    },
+    {
+      "name": "cabinet_source",
+      "type": "Char (32)",
+      "label": "Cabinet Source"
+    },
+    {
+      "name": "centera_disabled",
+      "type": "Boolean",
+      "label": "centera disabled"
+    },
+    {
+      "name": "comments",
+      "type": "Char (2000)",
+      "label": "Comments"
+    },
+    {
+      "name": "default_delete_duration",
+      "type": "Integer",
+      "label": "Default Delete Duration"
+    },
+    {
+      "name": "readonly_cabinet",
+      "type": "Boolean",
+      "label": "Readonly Cabinet"
+    },
+    {
+      "name": "source_type",
+      "type": "Char (48)",
+      "label": "Source Type"
+    },
+    {
+      "name": "email_archive",
+      "type": "Boolean",
+      "label": "email archive"
+    },
+    {
+      "name": "event_rule_default",
+      "type": "Char (14 )",
+      "label": "Event Rule Default"
+    },
+    {
+      "name": "legal_hold_codes",
+      "type": "Char (64)",
+      "label": "Legal Hold Codes"
+    },
+    {
+      "name": "lob_name",
+      "type": "Char (255)",
+      "label": "LOB Name"
+    },
+    {
+      "name": "owner_au",
+      "type": "Char (7)",
+      "label": "Owner AU"
+    },
+    {
+      "name": "lightweight_workflow_id",
+      "type": "Char (32)",
+      "label": "Lightweight Workflow ID"
+    },
+    {
+      "name": "pre-provisioned_cabinet_order_number",
+      "type": "Integer",
+      "label": "Pre-provisioned Cabinet Order Number"
+    },
+    {
+      "name": "pre-provisioned_cabinet_state",
+      "type": "Char (32)",
+      "label": "Pre-provisioned Cabinet State"
+    },
+    {
+      "name": "primary_cabinet_owner",
+      "type": "Char (32)",
+      "label": "Primary Cabinet Owner"
+    },
+    {
+      "name": "rc_integration",
+      "type": "Boolean",
+      "label": "RC Integration"
+    },
+    {
+      "name": "records_enabled",
+      "type": "Boolean",
+      "label": "Records Enabled"
+    },
+    {
+      "name": "record_class_codes",
+      "type": "Char (32)",
+      "label": "Record Class Codes"
+    },
+    {
+      "name": "record_class_default",
+      "type": "Char (10)",
+      "label": "record class default"
+    },
+    {
+      "name": "record_country_code",
+      "type": "Char (3)",
+      "label": "Record Country Code"
+    },
+    {
+      "name": "retention_duration",
+      "type": "Integer",
+      "label": "retention duration"
+    },
+    {
+      "name": "secondary_cabinet_ownef",
+      "type": "Char (32)",
+      "label": "Secondary Cabinet Owner"
+    },
+    {
+      "name": "default_secure_content_flag",
+      "type": "Boolean",
+      "label": "Default Secure Content Flag"
+    }
+  ]
+}

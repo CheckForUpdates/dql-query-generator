@@ -1,0 +1,94 @@
+{
+  "record_class": [
+    {
+      "attr_name": "record_class_code",
+      "type": "Char (10)",
+      "label": "Record Class Retention Code"
+    },
+    {
+      "attr_name": "record_class_country_code",
+      "type": "Char (3)",
+      "label": "Country Code"
+    },
+    {
+      "attr_name": "record_class_date_watermark",
+      "type": "Time/ Date",
+      "label": "Date Watermark"
+    },
+    {
+      "attr_name": "record_class_deprecated",
+      "type": "Boolean",
+      "label": "Record Class Deprecated"
+    },
+    {
+      "attr_name": "record_class_description",
+      "type": "Char (2000)",
+      "label": "Record Class Description"
+    },
+    {
+      "attr_name": "record_class_flags_act",
+      "type": "Boolean",
+      "label": "Active Flag (Event Driven)"
+    },
+    {
+      "attr_name": "record_class_flags_cy",
+      "type": "Boolean",
+      "label": "Current Year Flag"
+    },
+    {
+      "attr_name": "record_class_flags_ind",
+      "type": "Boolean",
+      "label": "Indefinite Flag"
+    },
+    {
+      "attr_name": "record_class_flags_max",
+      "type": "Boolean",
+      "label": "Max Flag"
+    },
+    {
+      "attr_name": "record_class_flags_perm",
+      "type": "Boolean",
+      "label": "Permanent Flag"
+    },
+    {
+      "attr_name": "record_class_flags_sup",
+      "type": "Boolean",
+      "label": "Superceded Flag"
+    },
+    {
+      "attr_name": "record_class_lifecycle",
+      "type": "Char (255)",
+      "label": "Record Class Lifecycle"
+    },
+    {
+      "attr_name": "record_class",
+      "type": "Char (255)",
+      "label": "Class Name"
+    },
+    {
+      "attr_name": "record_class_retain_days",
+      "type": "Integer",
+      "label": "Retention Days"
+    },
+    {
+      "attr_name": "record_class_retain_months",
+      "type": "Integer",
+      "label": "Retention Months"
+    },
+    {
+      "attr_name": "record_class_retain_weeks",
+      "type": "Integer",
+      "label": "Retention Weeks"
+    },
+    {
+      "attr_name": "record_class_retain_years",
+      "type": "Integer",
+      "label": "Retention Years"
+    },
+    {
+      "attr_name": "retention_event",
+      "type": "Char (10)",
+      "label": "Retention Event"
+    }
+  ]
+}
