@@ -40,24 +40,41 @@ response = requests.put(index_url, json=mapping)
 if response.status_code == 200:
     print(f"✅ Index '{INDEX_NAME}' created successfully.")
 
-    # Wait for the index to become ready
-    print(f"Waiting for index '{INDEX_NAME}' to become ready (up to 120s)...")
-    health_url = f"{ELASTIC_URL}/_cluster/health/{INDEX_NAME}?wait_for_status=yellow&timeout=120s" # Increased server timeout
-    try:
-        # Add a client-side timeout slightly longer than the server-side wait time
-        health_response = requests.get(health_url, timeout=130) # Increased client timeout
-        health_response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
-        health_data = health_response.json()
-        if health_data.get("timed_out"):
-            print(f"⚠️ Timed out waiting for index '{INDEX_NAME}' to become ready.")
-            exit()
-        elif health_data.get("status") in ["green", "yellow"]:
-             print(f"✅ Index '{INDEX_NAME}' is ready (status: {health_data.get('status')}).")
-        else:
-            print(f"⚠️ Index '{INDEX_NAME}' has unexpected status: {health_data.get('status')}.")
-            exit()
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Error checking index health: {e}")
+    # Wait for the index to become ready using polling
+    print(f"Waiting for index '{INDEX_NAME}' to become ready (polling up to 120s)...")
+    start_time = time.time()
+    max_wait_seconds = 120
+    check_interval_seconds = 5
+    health_url = f"{ELASTIC_URL}/_cluster/health/{INDEX_NAME}"
+    index_ready = False
+
+    while time.time() - start_time < max_wait_seconds:
+        try:
+            health_response = requests.get(health_url, timeout=10) # Short timeout for each poll
+            health_response.raise_for_status()
+            health_data = health_response.json()
+            status = health_data.get("status")
+
+            if status in ["green", "yellow"]:
+                print(f"✅ Index '{INDEX_NAME}' is ready (status: {status}).")
+                index_ready = True
+                break
+            else:
+                print(f"Index status: {status}. Waiting...")
+
+        except requests.exceptions.Timeout:
+            print("Polling request timed out. Retrying...")
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Error checking index health during polling: {e}")
+            # Decide if this error is fatal or if polling should continue
+            # For now, let's exit on persistent errors
+            time.sleep(check_interval_seconds) # Wait before retrying after error
+            # Could add a retry counter here if needed
+
+        time.sleep(check_interval_seconds)
+
+    if not index_ready:
+        print(f"⚠️ Timed out after {max_wait_seconds}s waiting for index '{INDEX_NAME}' to become ready.")
         exit()
 
 else:
