@@ -3,8 +3,19 @@ import requests
 
 ELASTIC_URL = "http://localhost:9200"
 INDEX_NAME = "dql_schema"
+index_url = f"{ELASTIC_URL}/{INDEX_NAME}"
 
-# 1. Create the index with mapping (if it doesn't exist)
+# 1. Delete existing index (if it exists) to prevent stale data
+print(f"Attempting to delete existing index '{INDEX_NAME}'...")
+delete_response = requests.delete(index_url)
+if delete_response.status_code == 200:
+    print(f"✅ Index '{INDEX_NAME}' deleted successfully.")
+elif delete_response.status_code == 404:
+    print(f"ℹ️ Index '{INDEX_NAME}' does not exist, no need to delete.")
+else:
+    print(f"⚠️ Failed to delete index: {delete_response.text}")
+
+# 2. Create the new index with mapping
 mapping = {
     "mappings": {
         "properties": {
@@ -23,15 +34,15 @@ mapping = {
     }
 }
 
-index_url = f"{ELASTIC_URL}/{INDEX_NAME}"
 response = requests.put(index_url, json=mapping)
 
-if response.status_code in [200, 201]:
-    print(f"✅ Index '{INDEX_NAME}' created or already exists.")
+if response.status_code == 200:
+    print(f"✅ Index '{INDEX_NAME}' created successfully.")
 else:
     print(f"⚠️ Failed to create index: {response.text}")
+    exit() # Exit if index creation fails
 
-# 2. Load all embedded data
+# 3. Load all embedded data
 try:
     with open("context/all_embeddings.json", "r") as f:
         all_data = json.load(f)
@@ -43,7 +54,7 @@ except json.JSONDecodeError:
     print("❌ Error: Failed to decode JSON from 'context/all_embeddings.json'.")
     exit()
 
-# 3. Bulk upload
+# 4. Bulk upload
 bulk_data = ""
 doc_id_counter = 0
 for data_type, records in all_data.items():
