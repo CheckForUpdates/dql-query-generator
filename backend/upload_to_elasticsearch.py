@@ -75,6 +75,17 @@ if response.status_code == 200:
 
     if not index_ready:
         print(f"⚠️ Timed out after {max_wait_seconds}s waiting for index '{INDEX_NAME}' to become ready.")
+        # Try to get allocation explanation
+        print("Attempting to get shard allocation explanation...")
+        explain_url = f"{ELASTIC_URL}/_cluster/allocation/explain"
+        try:
+            explain_response = requests.get(explain_url, timeout=10)
+            explain_response.raise_for_status()
+            print("--- Allocation Explanation ---")
+            print(json.dumps(explain_response.json(), indent=2))
+            print("-----------------------------")
+        except requests.exceptions.RequestException as explain_e:
+            print(f"❌ Could not get allocation explanation: {explain_e}")
         exit()
 
 else:
