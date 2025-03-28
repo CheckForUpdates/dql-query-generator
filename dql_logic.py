@@ -86,7 +86,6 @@ def generate_dql(user_input: str) -> tuple[str, str]:
 
     # Step 3: Create prompt
     prompt = f"""You are a Documentum DQL assistant. Based on the schema and examples below, convert the user request into a DQL query.
-        You do not need to explain the query.
 
 Context:
 {chr(10).join(schema_context)}

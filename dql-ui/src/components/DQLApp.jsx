@@ -87,6 +87,12 @@ const DQLApp = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="E.g., Show me all documents modified in the last 7 days"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Prevent newline in textarea
+                    handleSubmit(e); // Trigger form submission
+                  }
+                }}
               ></textarea>
             </div>
 
