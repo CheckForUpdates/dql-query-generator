@@ -1,5 +1,6 @@
 import json
 import requests
+import time # Add time import for delays
 
 ELASTIC_URL = "http://localhost:9200"
 INDEX_NAME = "dql_schema"
@@ -38,6 +39,26 @@ response = requests.put(index_url, json=mapping)
 
 if response.status_code == 200:
     print(f"✅ Index '{INDEX_NAME}' created successfully.")
+
+    # Wait for the index to become ready
+    print(f"Waiting for index '{INDEX_NAME}' to become ready...")
+    health_url = f"{ELASTIC_URL}/_cluster/health/{INDEX_NAME}?wait_for_status=yellow&timeout=60s"
+    try:
+        health_response = requests.get(health_url)
+        health_response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+        health_data = health_response.json()
+        if health_data.get("timed_out"):
+            print(f"⚠️ Timed out waiting for index '{INDEX_NAME}' to become ready.")
+            exit()
+        elif health_data.get("status") in ["green", "yellow"]:
+             print(f"✅ Index '{INDEX_NAME}' is ready (status: {health_data.get('status')}).")
+        else:
+            print(f"⚠️ Index '{INDEX_NAME}' has unexpected status: {health_data.get('status')}.")
+            exit()
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error checking index health: {e}")
+        exit()
+
 else:
     print(f"⚠️ Failed to create index: {response.text}")
     exit() # Exit if index creation fails
