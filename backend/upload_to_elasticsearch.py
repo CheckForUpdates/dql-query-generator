@@ -41,11 +41,11 @@ if response.status_code == 200:
     print(f"✅ Index '{INDEX_NAME}' created successfully.")
 
     # Wait for the index to become ready
-    print(f"Waiting for index '{INDEX_NAME}' to become ready...")
-    health_url = f"{ELASTIC_URL}/_cluster/health/{INDEX_NAME}?wait_for_status=yellow&timeout=60s"
+    print(f"Waiting for index '{INDEX_NAME}' to become ready (up to 120s)...")
+    health_url = f"{ELASTIC_URL}/_cluster/health/{INDEX_NAME}?wait_for_status=yellow&timeout=120s" # Increased server timeout
     try:
         # Add a client-side timeout slightly longer than the server-side wait time
-        health_response = requests.get(health_url, timeout=70)
+        health_response = requests.get(health_url, timeout=130) # Increased client timeout
         health_response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
         health_data = health_response.json()
         if health_data.get("timed_out"):
