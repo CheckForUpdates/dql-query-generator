@@ -16,7 +16,7 @@ genai.configure(api_key="AIzaSyAIremlgEW9JctWWK7ns-rRjsz67BF8x60")
 
 # Load embedding model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
-model = genai.GenerativeModel("gemini-2.5-pro-exp-03-25")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 # ElasticSearch config

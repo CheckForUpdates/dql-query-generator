@@ -3,6 +3,22 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+// Helper to format timestamps to MM/dd/yyyy H:M a
+function formatTimestamp(ts) {
+  if (!ts) return "";
+  // Try to parse as MM/dd/yyyy H:M a, otherwise try ISO, otherwise return as is
+  const date = new Date(ts);
+  if (!isNaN(date.getTime())) {
+    // Format to MM/dd/yyyy H:M a
+    const pad = n => n.toString().padStart(2, '0');
+    let hours = date.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    return `${pad(date.getMonth() + 1)}/${pad(date.getDate())}/${date.getFullYear()} ${pad(hours)}:${pad(date.getMinutes())} ${ampm}`;
+  }
+  return ts;
+}
 
 const DQLApp = () => {
   const [input, setInput] = useState("");
@@ -13,6 +29,9 @@ const DQLApp = () => {
   const [queryHistory, setQueryHistory] = useState([]);
   const [currentQueryData, setCurrentQueryData] = useState(null); // To store input, query, timestamp
   const [feedbackGiven, setFeedbackGiven] = useState(false); // Track feedback for the current query
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [pendingFeedbackType, setPendingFeedbackType] = useState(null); // 'good' or 'bad'
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,25 +59,34 @@ const DQLApp = () => {
     setIsLoading(false);
   };
 
-  const handleFeedback = async (feedbackType) => {
-    if (feedbackGiven || !currentQueryData) return; // Prevent multiple feedbacks or feedback on no query
+  const handleFeedbackClick = (feedbackType) => {
+    if (feedbackGiven || !currentQueryData) return;
+    setPendingFeedbackType(feedbackType);
+    setShowCommentModal(true);
+  };
 
-    setFeedbackGiven(true); // Mark feedback as given for this query
+  const submitFeedback = async (comment) => {
+    if (feedbackGiven || !currentQueryData || !pendingFeedbackType) return;
+    setFeedbackGiven(true);
+    setShowCommentModal(false);
+    setCommentText("");
     try {
       await fetch("http://localhost:8000/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...currentQueryData,
-          feedback: feedbackType // 'good' or 'bad'
+          feedback: pendingFeedbackType, // 'good' or 'bad'
+          comment: comment || ""
         })
       });
+      setPendingFeedbackType(null);
       // Optionally: Show a confirmation message to the user
-      console.log("Feedback submitted:", feedbackType);
+      console.log("Feedback submitted:", pendingFeedbackType, comment);
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      setFeedbackGiven(false); // Allow retry if submission failed
-      // Optionally: Show an error message to the user
+      setFeedbackGiven(false);
+      setPendingFeedbackType(null);
     }
   };
 
@@ -146,30 +174,34 @@ const DQLApp = () => {
               </button>
             )}
           </div>
-          <div className="bg-gray-800 rounded-md p-3 overflow-x-auto">
-            <ReactMarkdown
-              // Wrap the plain query string in markdown code fences for highlighting
-              children={generatedQuery ? `\`\`\`sql\n${generatedQuery}\n\`\`\`` : "Your query will appear here..."}
-              components={{
-                code({ inline, children, ...props }) {
-                  if (inline) {
-                    return <code {...props}>{children}</code>;
-                  }
+          <div className="bg-gray-800 rounded-md p-3 overflow-x-auto text-white">
+            {generatedQuery ? (
+              <ReactMarkdown
+                children={`\`\`\`sql\n${generatedQuery}\n\`\`\``}
+                components={{
+                  code({ inline, children, ...props }) {
+                    if (inline) {
+                      return <code {...props}>{children}</code>;
+                    }
 
-                  return (
-                    <SyntaxHighlighter
-                      style={vscDarkPlus}
-                      language="sql"
-                      PreTag="div"
-                      {...props}
-                    >
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  );
-                }
-              }}
-            />
+                    return (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus}
+                        language="sql"
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, "")}
+                      </SyntaxHighlighter>
+                    );
+                  },
+                }}
+              />
+            ) : (
+              <p className="text-white">Your query will appear here...</p>
+            )}
           </div>
+
 
           {/* Feedback Buttons */}
           {generatedQuery && generatedQuery !== "-- Error contacting backend" && (
@@ -178,7 +210,7 @@ const DQLApp = () => {
                 Is this query accurate?
               </span>
               <button
-                onClick={() => handleFeedback('good')}
+                onClick={() => handleFeedbackClick('good')}
                 disabled={feedbackGiven}
                 className={`px-3 py-1 rounded ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-100 hover:bg-green-200 text-green-700'}`}
                 aria-label="Good query"
@@ -186,13 +218,44 @@ const DQLApp = () => {
                 👍
               </button>
               <button
-                onClick={() => handleFeedback('bad')}
+                onClick={() => handleFeedbackClick('bad')}
                 disabled={feedbackGiven}
                 className={`px-3 py-1 rounded ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
                 aria-label="Bad query"
               >
                 👎
               </button>
+            </div>
+          )}
+
+          {/* Comment Modal */}
+          {showCommentModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                <h3 className="text-lg font-semibold mb-2">Leave additional comments (optional)</h3>
+                <textarea
+                  className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  placeholder="Let us know more about your feedback..."
+                  autoFocus
+                />
+                <div className="flex justify-end space-x-2">
+                  <button
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    onClick={() => submitFeedback(commentText)}
+                  >
+                    Submit
+                  </button>
+                  <button
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                    onClick={() => submitFeedback("")}
+                  >
+                    No comment
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -226,7 +289,7 @@ const DQLApp = () => {
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {queryHistory.map((item, index) => (
                 <div key={index} className="border-b pb-2">
-                  <div className="text-xs text-gray-500">{item.timestamp}</div>
+                  <div className="text-xs text-gray-500">{formatTimestamp(item.timestamp)}</div>
                   <div className="text-sm text-gray-700 mt-1">{item.input}</div>
                   <pre className="text-xs bg-gray-50 p-2 mt-1 rounded overflow-x-auto">{item.query}</pre>
                 </div>

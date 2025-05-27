@@ -26,6 +26,7 @@ class FeedbackRequest(BaseModel):
     query: str
     timestamp: str
     feedback: str # 'good' or 'bad'
+    comment: str = ""  # Optional comment
 
 @app.get("/")
 def read_root():
@@ -34,7 +35,13 @@ def read_root():
 @app.post("/generate")
 def generate(request: QueryRequest):
     dql, timestamp = generate_dql(request.query)
-    return { "dql": dql, "timestamp": timestamp }
+    # Format timestamp to MM/dd/yyyy H:M a
+    try:
+        dt = datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+    except Exception:
+        dt = datetime.datetime.now()
+    formatted_timestamp = dt.strftime("%m/%d/%Y %I:%M %p")
+    return { "dql": dql, "timestamp": formatted_timestamp }
 
 @app.post("/feedback")
 def receive_feedback(request: FeedbackRequest):
@@ -43,18 +50,21 @@ def receive_feedback(request: FeedbackRequest):
 
     try:
         with open(feedback_file, 'a', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['timestamp', 'input', 'query', 'feedback', 'received_at']
+            fieldnames = ['timestamp', 'input', 'query', 'feedback', 'received_at', 'comment']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             if not file_exists:
                 writer.writeheader() # Write header only if file is new
 
+            # Format received_at to MM/dd/yyyy H:M a
+            received_at = datetime.datetime.now().strftime("%m/%d/%Y %I:%M %p")
             writer.writerow({
                 'timestamp': request.timestamp,
                 'input': request.input,
                 'query': request.query,
                 'feedback': request.feedback,
-                'received_at': datetime.datetime.now().isoformat()
+                'received_at': received_at,
+                'comment': request.comment
             })
         return {"status": "Feedback received"}
     except Exception as e:
