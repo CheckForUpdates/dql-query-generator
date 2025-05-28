@@ -1,0 +1,10 @@
+[
+  {
+    "type": "user_context",
+    "content": "The current user's default cabinet is Finance_2024."
+  },
+  {
+    "type": "user_context",
+    "content": "The current user has access to HR_Records and Compliance_Q4 cabinets."
+  }
+]

@@ -16,11 +16,11 @@ genai.configure(api_key="AIzaSyAIremlgEW9JctWWK7ns-rRjsz67BF8x60")
 
 # Load embedding model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-pro-exp-03-25")
 
 
 # ElasticSearch config
-ELASTIC_URL = "http://localhost:9200"
+ELASTIC_URL = "http://129.158.33.207:9200"
 INDEX_NAME = "dql_schema"
 TOP_K = 5
 

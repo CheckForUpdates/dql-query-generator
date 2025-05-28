@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DQL Query Assistant</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react-markdown@8.0.7/umd/react-markdown.js"></script>
+
+    <script src="https://unpkg.com/react-syntax-highlighter@15.5.0/dist/umd/prism.js"></script>
+    <script src="https://unpkg.com/react-syntax-highlighter@15.5.0/dist/umd/styles/prism/vsc-dark-plus.js"></script>
+
+
+    <style>
+        /* Basic body styling to ensure full height */
+        body, #root {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        #root {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Dependency Setup ---
+        const { useState, useEffect, StrictMode } = React;
+        const ReactMarkdown = window.ReactMarkdown;
+
+        // React Syntax Highlighter:
+        // The UMD build of prism.js (https://unpkg.com/react-syntax-highlighter@15.5.0/dist/umd/prism.js)
+        // exposes the component directly on window.ReactSyntaxHighlighter.
+        const SyntaxHighlighter = window.ReactSyntaxHighlighter;
+
+        // The UMD build of the style (https://unpkg.com/react-syntax-highlighter@15.5.0/dist/umd/styles/prism/vsc-dark-plus.js)
+        // exposes the style object on window.reactSyntaxHighlighter_styles_prism_vscDarkPlus.
+        const vscDarkPlus = window.reactSyntaxHighlighter_styles_prism_vscDarkPlus;
+
+
+        // --- React Component: DQLApp (from DQLApp.jsx) ---
+        const DQLApp = () => {
+          const [input, setInput] = useState("");
+          const [generatedQuery, setGeneratedQuery] = useState("");
+          const [isLoading, setIsLoading] = useState(false);
+          // const [showHelp, setShowHelp] = useState(false); // showHelp was not used in the final version of the JSX
+          const [showDQLInfo, setShowDQLInfo] = useState(false);
+          const [queryHistory, setQueryHistory] = useState([]);
+          const [currentQueryData, setCurrentQueryData] = useState(null); // To store input, query, timestamp
+          const [feedbackGiven, setFeedbackGiven] = useState(false); // Track feedback for the current query
+
+          // Function to handle form submission and API call
+          const handleSubmit = async (e) => {
+            e.preventDefault(); // Prevent default form submission behavior
+            if (!input.trim()) return; // Do nothing if input is empty
+
+            setIsLoading(true); // Set loading state to true
+            setGeneratedQuery(""); // Clear previous query
+            try {
+              // API call to the backend to generate DQL query
+              // IMPORTANT: This backend is expected to be running at http://localhost:8000
+              const res = await fetch("http://localhost:8000/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: input })
+              });
+
+              if (!res.ok) {
+                // Handle HTTP errors
+                throw new Error(`HTTP error! status: ${res.status}`);
+              }
+
+              const data = await res.json();
+              const newQueryData = { input, query: data.dql, timestamp: data.timestamp || new Date().toISOString() };
+              setGeneratedQuery(data.dql);
+              setCurrentQueryData(newQueryData); // Store current query details
+              setFeedbackGiven(false); // Reset feedback status for new query
+              setQueryHistory(prevHistory => [newQueryData, ...prevHistory].slice(0, 10)); // Keep last 10 queries
+            } catch (error) {
+              // Handle errors during API call or data processing
+              setGeneratedQuery("-- Error contacting backend or processing response. Please ensure the backend is running and check console for details.");
+              setCurrentQueryData(null); // Clear current query data on error
+              setFeedbackGiven(false);
+              console.error("Error during query generation:", error);
+            }
+            setIsLoading(false); // Set loading state to false
+          };
+
+          // Function to handle feedback submission
+          const handleFeedback = async (feedbackType) => {
+            if (feedbackGiven || !currentQueryData) return; // Prevent multiple feedbacks or feedback on no query
+
+            setFeedbackGiven(true); // Mark feedback as given for this query
+            try {
+              // API call to the backend to submit feedback
+              // IMPORTANT: This backend is expected to be running at http://localhost:8000
+              await fetch("http://localhost:8000/feedback", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ...currentQueryData,
+                  feedback: feedbackType // 'good' or 'bad'
+                })
+              });
+              // Optionally: Show a confirmation message to the user
+              console.log("Feedback submitted:", feedbackType);
+            } catch (error) {
+              // Handle errors during feedback submission
+              console.error("Error submitting feedback:", error);
+              setFeedbackGiven(false); // Allow retry if submission failed
+              // Optionally: Show an error message to the user
+            }
+          };
+
+          // Function to copy generated query to clipboard
+          const copyToClipboard = () => {
+            if (generatedQuery) {
+                // Use document.execCommand for broader compatibility in iFrames
+                const textArea = document.createElement("textarea");
+                textArea.value = generatedQuery;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    console.log("Query copied to clipboard!");
+                } catch (err) {
+                    console.error("Failed to copy query: ", err);
+                    // Fallback or error message for the user if needed
+                }
+                document.body.removeChild(textArea);
+            }
+          };
+
+          // Example queries (enable showHelp to add)
+          // const exampleQueries = [
+          //   "Show me all documents of type 'dm_document'",
+          //   "Find emails sent by 'John Doe' today",
+          //   "List all virtual documents created last week"
+          // ];
+          // const useExample = (text) => setInput(text);
+
+
+          // JSX for the component
+          return (
+            <div className="flex flex-col min-h-screen bg-gray-100"> {/* Ensure full height */}
+              {/* Header Section */}
+              <header className="bg-blue-600 text-white p-4 shadow-md">
+                <div className="container mx-auto">
+                    <h1 className="text-2xl font-bold">Documentum DQL Query Assistant</h1>
+                    <p className="text-sm">Convert natural language to Documentum Query Language</p>
+                </div>
+              </header>
+
+              {/* Main Content Area */}
+              <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8 overflow-auto">
+                {/* Input Form Section */}
+                <div className="mb-6">
+                  <form onSubmit={handleSubmit} className="bg-white rounded-lg p-4 shadow-md">
+                    <div className="mb-4">
+                      <label htmlFor="nlInput" className="block text-gray-700 font-semibold mb-2">
+                        Describe your query in natural language:
+                      </label>
+                      <textarea
+                        id="nlInput"
+                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                        rows="3"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="E.g., Show me all documents modified in the last 7 days"
+                        onKeyDown={(e) => {
+                          // Submit form on Enter key press (if Shift is not pressed)
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSubmit(e);
+                          }
+                        }}
+                      ></textarea>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Generating..." : "Generate DQL"}
+                      </button>
+
+                      {/* Example Queries Button (if showHelp was used) */}
+                      {/* <button
+                        type="button"
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={() => setShowHelp(!showHelp)}
+                      >
+                        {showHelp ? "Hide Examples" : "Show Examples"}
+                      </button> */}
+                    </div>
+
+                    {/* Example Queries Section (if showHelp was used) */}
+                    {/* {showHelp && (
+                    <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                      <h3 className="font-medium text-gray-700 mb-2">Example Queries:</h3>
+                      <ul className="space-y-1">
+                        {exampleQueries.map((example, index) => (
+                          <li key={index}>
+                            <button
+                              className="text-blue-600 hover:text-blue-800 text-left"
+                              onClick={() => useExample(example)}
+                            >
+                              {example}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )} */}
+                  </form>
+                </div>
+
+                {/* Generated Query Display Section */}
+                <div className="bg-white rounded-lg p-4 shadow-md mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-lg font-semibold text-gray-800">Generated DQL Query:</h2>
+                    {generatedQuery && generatedQuery !== "-- Error contacting backend or processing response. Please ensure the backend is running and check console for details." && (
+                      <button
+                        className="text-sm text-blue-600 hover:text-blue-800 px-3 py-1 rounded-md border border-blue-600 hover:bg-blue-50 transition-colors"
+                        onClick={copyToClipboard}
+                        title="Copy DQL to clipboard"
+                      >
+                        Copy to Clipboard
+                      </button>
+                    )}
+                  </div>
+                  <div className="bg-gray-800 rounded-md p-3 overflow-x-auto">
+                    {/* ReactMarkdown for displaying the query with syntax highlighting */}
+                    {/* Ensure SyntaxHighlighter and vscDarkPlus are available */}
+                    { (typeof SyntaxHighlighter !== 'undefined' && typeof vscDarkPlus !== 'undefined') ? (
+                        <ReactMarkdown
+                          children={generatedQuery ? `\`\`\`sql\n${generatedQuery}\n\`\`\`` : <span className="text-gray-400">Your query will appear here...</span>}
+                          components={{
+                            code({ node, inline, className, children, ...props }) {
+                              const match = /language-(\w+)/.exec(className || '');
+                              return !inline && match ? (
+                                <SyntaxHighlighter
+                                  style={vscDarkPlus}
+                                  language={match[1]}
+                                  PreTag="div"
+                                  {...props}
+                                >
+                                  {String(children).replace(/\n$/, "")}
+                                </SyntaxHighlighter>
+                              ) : (
+                                <code className={className} {...props}>
+                                  {children}
+                                </code>
+                              );
+                            }
+                          }}
+                        />
+                      ) : (
+                        <pre className="text-white"><code className="text-white">{generatedQuery || "Syntax highlighter loading..."}</code></pre>
+                      )
+                    }
+                  </div>
+
+                  {/* Feedback Buttons Section */}
+                  {generatedQuery && generatedQuery !== "-- Error contacting backend or processing response. Please ensure the backend is running and check console for details." && (
+                    <div className="mt-3 flex items-center justify-end space-x-3">
+                      <span className={`text-sm ${feedbackGiven ? 'text-gray-500' : 'text-gray-700'}`}>
+                        Is this query accurate?
+                      </span>
+                      <button
+                        onClick={() => handleFeedback('good')}
+                        disabled={feedbackGiven}
+                        className={`px-3 py-1 rounded text-lg ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-green-100 hover:bg-green-200 text-green-700'}`}
+                        aria-label="Good query"
+                        title="Mark query as good"
+                      >
+                        👍
+                      </button>
+                      <button
+                        onClick={() => handleFeedback('bad')}
+                        disabled={feedbackGiven}
+                        className={`px-3 py-1 rounded text-lg ${feedbackGiven ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
+                        aria-label="Bad query"
+                        title="Mark query as bad"
+                      >
+                        👎
+                      </button>
+                    </div>
+                  )}
+
+                  {/* About DQL Toggle Button */}
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                      onClick={() => setShowDQLInfo(!showDQLInfo)}
+                    >
+                      {showDQLInfo ? "Hide DQL Info" : "About DQL"}
+                    </button>
+                  </div>
+
+                  {/* About DQL Information Section */}
+                  {showDQLInfo && (
+                    <div className="mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                      <strong>DQL</strong> (Documentum Query Language) is used to query the Documentum content repository                      
+                    </div>
+                  )}
+                </div>
+
+                {/* Query History Section */}
+                {queryHistory.length > 0 && (
+                  <div className="bg-white rounded-lg p-4 shadow-md">
+                    <h2 className="text-lg font-semibold mb-2 text-gray-800">Query History:</h2>
+                    <div className="space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-md p-2">
+                      {queryHistory.map((item, index) => (
+                        <div key={index} className="border-b border-gray-200 pb-2 mb-2 last:border-b-0 last:pb-0 last:mb-0">
+                          <div className="text-xs text-gray-500 mb-1">
+                            {new Date(item.timestamp).toLocaleString()}
+                          </div>
+                          <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded-md"><strong>Input:</strong> {item.input}</p>
+                          <div className="text-xs bg-gray-800 text-white p-2 mt-1 rounded overflow-x-auto">
+                            <pre className="whitespace-pre-wrap"><code>{item.query}</code></pre>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </main>
+
+              {/* Footer Section */}
+              <footer className="bg-gray-200 p-3 text-center text-gray-600 text-sm mt-auto">
+                DQL Query Generator - A natural language to Documentum Query Language Assistant
+              </footer>
+            </div>
+          );
+        };
+
+        // --- React Component: App (from App.jsx) ---
+        // This component simply wraps the main DQLApp component.
+        function App() {
+          return <DQLApp />;
+        }
+
+        // --- Application Rendering (from main.jsx) ---
+        // This finds the 'root' div in the HTML and renders the React application into it.
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(
+          // StrictMode is a tool for highlighting potential problems in an application.
+          // It activates additional checks and warnings for its descendants.
+          <StrictMode>
+            <App />
+          </StrictMode>
+        );
+    </script>
+
+</body>
+</html>

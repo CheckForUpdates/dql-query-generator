@@ -172,6 +172,12 @@
       "title": "Counting and Filtering",
       "content": "For 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria.",
       "source_text": "Rule: Counting and Filtering\nFor 'count how many' questions, use SELECT COUNT(*). Apply appropriate WHERE clauses based on the user's criteria."
+    },
+    {
+      "type": "guideline",
+      "title": "Keyword Matching",
+      "content": "Translate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching.",
+      "source_text": "Rule: Keyword Matching\nTranslate phrases like 'title contains X' to 'title LIKE \"%X%\"'. Use LIKE for partial text matching."
     }
   ]
   

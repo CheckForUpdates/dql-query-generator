@@ -1,0 +1,78 @@
+[
+  {
+    "type": "example",
+    "tags": [
+      "dm_document",
+      "count",
+      "folder"
+    ],
+    "nl": "How many documents are in my cabinet?",
+    "dql": "SELECT COUNT(*) FROM dm_document WHERE FOLDER('/<CabinetName>', DESCEND);"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_document",
+      "date_filter",
+      "folder"
+    ],
+    "nl": "Show documents created in the last 7 days.",
+    "dql": "SELECT * FROM dm_document WHERE r_creation_date > DATE(NOW - 7);"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_document",
+      "ownership",
+      "folder"
+    ],
+    "nl": "List documents I own in the HR folder.",
+    "dql": "SELECT * FROM dm_document WHERE owner_name = USER AND FOLDER('/HR', DESCEND);"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_user",
+      "access"
+    ],
+    "nl": "Who has access to this cabinet?",
+    "dql": "SELECT DISTINCT user_name FROM dm_acl WHERE object_name = '<CabinetACLName>';"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "business_cab",
+      "existence"
+    ],
+    "nl": "Does the cabinet Finance_2024 exist?",
+    "dql": "SELECT object_name FROM business_cab WHERE object_name = 'Finance_2024';"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_document",
+      "size_filter"
+    ],
+    "nl": "Which documents are larger than 10MB?",
+    "dql": "SELECT object_name, r_content_size FROM dm_document WHERE r_content_size > 10240;"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_document",
+      "retention"
+    ],
+    "nl": "What documents are due for deletion next month?",
+    "dql": "SELECT * FROM dm_document WHERE retention_date < DATE(NOW + 30);"
+  },
+  {
+    "type": "example",
+    "tags": [
+      "dm_audittrail",
+      "activity"
+    ],
+    "nl": "Show the last 10 edits to this document.",
+    "dql": "SELECT user_name, time_stamp FROM dm_audittrail WHERE audited_obj_id = '<r_object_id>' AND event_name = 'CHANGE' ORDER BY time_stamp DESC ENABLE(RETURN_TOP 10);"
+  }
+  
+]

@@ -3,7 +3,7 @@ import requests
 from sentence_transformers import SentenceTransformer
 
 # CONFIG
-ELASTIC_URL = "http://localhost:9200"
+ELASTIC_URL = "http://129.158.33.207:9200"
 INDEX_NAME = "dql_guidelines"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
@@ -20,10 +20,10 @@ guidelines = [
     },
     {
         "type": "pattern",
-        "title": "Pre-historic ID Pattern",
-        "source_text": "If the prompt includes the word pre-historic, it's referring to something with id that begins with 'ph' followed by a number, ph1, ph2, ph3, phN...",
+        "title": "Pre-prevision ID Pattern",
+        "source_text": "If the prompt includes the word pre-prevision, it's referring to something with id that begins with 'ph' followed by a number, ph1, ph2, ph3, phN...",
         "content": {
-            "trigger": "pre-historic",
+            "trigger": "pre-prevision",
             "pattern": "ph\\d+",
             "prefix": "ph"
         }

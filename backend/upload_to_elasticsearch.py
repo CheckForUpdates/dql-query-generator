@@ -2,7 +2,7 @@ import json
 import requests
 import time # Add time import for delays
 
-ELASTIC_URL = "http://localhost:9200"
+ELASTIC_URL = "http://129.158.33.207:9200"
 INDEX_NAME = "dql_schema"
 index_url = f"{ELASTIC_URL}/{INDEX_NAME}"
 
@@ -94,7 +94,7 @@ else:
 
 # 3. Load all embedded data
 try:
-    with open("context/all_embeddings.json", "r") as f:
+    with open("/home/lotso/Documents/dev/dql-query-generator/context/all_embeddings.json", "r") as f:
         all_data = json.load(f)
     print("✅ Loaded consolidated embeddings from 'context/all_embeddings.json'.")
 except FileNotFoundError:
