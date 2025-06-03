@@ -5,17 +5,17 @@ from datetime import datetime
 import requests
 from sentence_transformers import SentenceTransformer
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=AIzaSyAIremlgEW9JctWWK7ns-rRjsz67BF8x60
 # --- Config ---
 #ELASTIC_URL = "http://localhost:9200"
-ELASTIC_URL = "http://129.158.33.207:9200"
+ELASTIC_URL = os.getenv("ELASTIC_URL")
 INDEX_NAME = "dql_schema"
 TOP_K = 5
-GEMINI_API_KEY = "AIzaSyAIremlgEW9JctWWK7ns-rRjsz67BF8x60"
-#GEMINI_MODEL = "gemini-1.5-flash"
-#GEMINI_MODEL = "gemini-2.0-pro-exp-02-05"
-GEMINI_MODEL = "gemini-2.5-pro-exp-03-25"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL")
 GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
 
 # --- App Setup ---

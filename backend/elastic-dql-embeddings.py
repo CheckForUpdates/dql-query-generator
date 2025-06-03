@@ -1,9 +1,12 @@
 import json
 import requests
 from sentence_transformers import SentenceTransformer
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # CONFIG
-ELASTIC_URL = "http://129.158.33.207:9200"
+ELASTIC_URL = os.getenv("ELASTIC_URL")
 INDEX_NAME = "dql_guidelines"
 MODEL_NAME = "all-MiniLM-L6-v2"
 

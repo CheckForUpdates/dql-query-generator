@@ -46,19 +46,21 @@ def receive_feedback(request: FeedbackRequest):
 
     try:
         with open(feedback_file, 'a', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['timestamp', 'input', 'query', 'feedback', 'received_at', 'comment']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            fieldnames = ['input', 'query', 'feedback', 'comment']
+            writer = csv.DictWriter(
+                csvfile,
+                fieldnames=fieldnames,
+                quoting=csv.QUOTE_ALL,
+                escapechar='\\',
+            )
 
             if not file_exists:
                 writer.writeheader()
 
-            received_at = datetime.datetime.now().strftime("%m/%d/%Y %I:%M %p")
             writer.writerow({
-                'timestamp': request.timestamp,
                 'input': request.input,
                 'query': request.query,
                 'feedback': request.feedback,
-                'received_at': received_at,
                 'comment': request.comment
             })
         return {"status": "Feedback received"}

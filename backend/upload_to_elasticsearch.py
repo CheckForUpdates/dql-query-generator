@@ -1,8 +1,11 @@
 import json
 import requests
 import time # Add time import for delays
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-ELASTIC_URL = "http://129.158.33.207:9200"
+ELASTIC_URL = os.getenv("ELASTIC_URL")
 INDEX_NAME = "dql_schema"
 index_url = f"{ELASTIC_URL}/{INDEX_NAME}"
 

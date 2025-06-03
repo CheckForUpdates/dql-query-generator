@@ -1,4 +1,3 @@
-# Updated generate_embeddings.py with examples_revised.json and business_doc schema integration
 import json
 import os
 from sentence_transformers import SentenceTransformer
@@ -7,7 +6,8 @@ import logging
 # --- Configuration ---
 MODEL_NAME = 'all-MiniLM-L6-v2'
 OUTPUT_FILE = 'context/all_embeddings.json'
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+CONTEXT_DIR = os.path.join(PROJECT_ROOT, "context")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -72,6 +72,11 @@ DATA_SOURCES = [
         "type": "user_context",
         "source": os.path.join(PROJECT_ROOT, "context/user_context.json"),
         "text_field": "content"
+    },
+    {
+        "type": "feedback",
+        "source": os.path.join(PROJECT_ROOT, "context/feedback_examples.json"),
+        "text_field": "nl"
     }
 ]
 
@@ -88,7 +93,6 @@ def generate_embeddings():
     for source_info in DATA_SOURCES:
         source_type = source_info["type"]
         text_field = source_info["text_field"]
-        items_to_embed = []
         embedded_items = []
 
         logging.info(f"Processing source type: {source_type}")
@@ -96,51 +100,61 @@ def generate_embeddings():
         try:
             if source_info["source"] == "hardcoded":
                 items_to_embed = source_info["data"]
-                logging.info(f"Loaded {len(items_to_embed)} hardcoded items for '{source_type}'.")
             else:
-                source_path = source_info["source"]
-                if not os.path.exists(source_path):
-                    logging.warning(f"Input file not found for '{source_type}': {source_path}. Skipping.")
-                    continue
-                with open(source_path, "r") as f:
+                with open(source_info["source"], "r", encoding="utf-8") as f:
                     items_to_embed = json.load(f)
-                logging.info(f"Loaded {len(items_to_embed)} items from '{source_path}'.")
-        except json.JSONDecodeError as e:
-            logging.error(f"Error reading JSON file {source_info.get('source', 'hardcoded')}: {e}. Skipping '{source_type}'.")
-            continue
         except Exception as e:
-            logging.error(f"Error loading data for '{source_type}': {e}. Skipping.")
+            logging.error(f"❌ Failed to load data for {source_type}: {e}")
             continue
 
-        for item in items_to_embed:
-            try:
-                text_to_embed = item.get(text_field)
-                if text_to_embed is None:
-                    logging.warning(f"Missing text field '{text_field}' in item for '{source_type}'. Skipping item.")
+        # Special handling for feedback
+        if source_type == "feedback":
+            for entry in items_to_embed:
+                if not entry.get("nl") or not entry.get("dql"):
                     continue
-
-                embedding = model.encode(text_to_embed).tolist()
-                output_item = item.copy()
-                output_item["embedding"] = embedding
-                if 'type' not in output_item:
-                    output_item['type'] = source_type
-                embedded_items.append(output_item)
-
-            except Exception as e:
-                logging.error(f"Failed to embed item for '{source_type}' ('{str(item.get(text_field, 'N/A'))[:50]}...'): {e}")
+                try:
+                    embedding = model.encode(entry["nl"]).tolist()
+                    feedback_type = "feedback_positive" if entry.get("score", 0) > 0 else "feedback_negative"
+                    item = {
+                        "type": feedback_type,
+                        "source": "feedback",
+                        "nl": entry["nl"],
+                        "dql": entry["dql"],
+                        "embedding": embedding,
+                        "tags": entry.get("tags", []) + ["feedback"],
+                        "score": entry.get("score", 0),
+                        "comment": entry.get("comment", "")
+                    }
+                    embedded_items.append(item)
+                except Exception as e:
+                    logging.error(f"Failed to embed feedback entry: {e}")
+        else:
+            for item in items_to_embed:
+                try:
+                    text_to_embed = item.get(text_field)
+                    if not text_to_embed:
+                        continue
+                    embedding = model.encode(text_to_embed).tolist()
+                    output_item = item.copy()
+                    output_item["embedding"] = embedding
+                    if 'type' not in output_item:
+                        output_item["type"] = source_type
+                    embedded_items.append(output_item)
+                except Exception as e:
+                    logging.error(f"Failed to embed item from {source_type}: {e}")
 
         all_embeddings.setdefault(source_type, []).extend(embedded_items)
-        logging.info(f"Finished embedding {len(embedded_items)} items for '{source_type}'.")
+        logging.info(f"✅ Embedded {len(embedded_items)} items for {source_type}")
 
+    # Save to disk
     output_path = os.path.join(PROJECT_ROOT, OUTPUT_FILE)
-    logging.info(f"Saving all embeddings to: {output_path}")
     try:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, "w") as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             json.dump(all_embeddings, f, indent=2)
-        logging.info("✅ Successfully saved all embeddings.")
+        logging.info(f"✅ Saved all embeddings to {output_path}")
     except Exception as e:
-        logging.error(f"❌ Failed to save embeddings to {output_path}: {e}")
+        logging.error(f"❌ Failed to save output: {e}")
 
 if __name__ == "__main__":
     generate_embeddings()

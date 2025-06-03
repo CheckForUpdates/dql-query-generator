@@ -11,7 +11,7 @@ from typing import Dict, List
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Config
-ELASTIC_URL = os.getenv("ELASTIC_URL", "http://129.158.33.207:9200")
+ELASTIC_URL = os.getenv("ELASTIC_URL")
 INDEX_NAME = os.getenv("INDEX_NAME", "dql_schema")
 TOP_K = 5
 
